@@ -63,29 +63,78 @@ function countSyllables(phoneme){
 function createHaiku(struc){
 
 	formatData(cmudictFile);
+	
+	// exit if user typed in nothing
+	if (struc == "0"){
+		sayBye();
+	}
 
 	var haiku = "";
 
-	for (var i = 0; i < struc.length; i++){
-		sylCount = struc[i];
-		possibleWords = words[sylCount];
-		randWord = Math.floor( Math.random() * possibleWords.length);
-		haiku += possibleWords[randWord];
+	try {
+
+		for (var i = 0; i < struc.length; i++){
+			sylCount = struc[i];
+			possibleWords = words[sylCount];
+			randWord = Math.floor( Math.random() * possibleWords.length);
+			haiku += possibleWords[randWord];
 
 		if ((i + 1) != struc.length)
 			haiku += "\n";
 
+		}
+
 	}
 
-	// console.log("Wow" + haiku);
+	catch (e) {
+		sayBye();
+	}
+
 	return haiku;
 
 }
 
+// 
+function processInput(text){
+    text = text.toString();
+	text = text.replace("\n", ""); // remove newline
+	text = text.split(",");
+
+	for (var i = 0; i < text.length; i++){
+		text[i] = Number(text[i]);
+	}
+
+	return text;
+}
+
+function sayBye() {
+	console.log("\nGoodbye!");
+	process.exit();
+}
+
 // log out the created haiku
-console.log("I generated a 5 / 7 / 5 syllable haiku for you!: \n")
+console.log("I generated a 5 / 7 / 5 syllable haiku for you:\n");
 console.log(createHaiku([5,7,5]));
-// console.log("If you want a new haiku, enter the syllable scheme you want:");
+
+// prompt the user if they want a new haiku.
+console.log("\nIf you want me to create a new haiku for you, enter a syllable scheme, delineated by commas.");
+console.log("Enter anything else to quit.");
+console.log("Scheme:")
+
+// read the input information
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+var util = require('util');
+
+process.stdin.on('data', function (text) {
+
+	text = processInput(text);
+	console.log("\n" + createHaiku(text));
+	sayBye();
+
+    
+});
+
 
 
 // export functions
